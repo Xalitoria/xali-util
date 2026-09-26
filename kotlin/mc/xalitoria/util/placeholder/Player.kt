@@ -1,8 +1,8 @@
-package mc.xalitoria.placeholder
+package mc.xalitoria.util.placeholder
 
-import mc.xalitoria.serial.xData
-import mc.xalitoria.util.SenderPlayer
-import mc.xalitoria.util.TargetPlayer
+import mc.xalitoria.util.bukkit.SenderPlayer
+import mc.xalitoria.util.bukkit.TargetPlayer
+import mc.xalitoria.util.serial.xData
 import org.bukkit.entity.Player
 import kotlin.uuid.toKotlinUuid
 
@@ -28,6 +28,7 @@ val Player.placeholderable get() = object : Placeholderable {
             .replace("{${prefix}display_name}", displayName)
             .replace("{${prefix}uuid_dashed}", uniqueId.toString())
             .replace("{${prefix}uuid}", uniqueId.toKotlinUuid().toHexString())
+            .replace("{${prefix}unique_id}", uniqueId.toKotlinUuid().toHexString())
             .replace("{${prefix}game_mode}", gameMode.name)
             .let { location.xData.setPlaceholders(it, prefix) }
             //.let { xStats?.placeholderable?.setPlaceholders(it, prefix) ?: it }

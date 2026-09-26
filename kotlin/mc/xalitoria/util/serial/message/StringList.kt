@@ -1,8 +1,8 @@
-package mc.xalitoria.serial.message
+package mc.xalitoria.util.serial.message
 
 import kotlinx.serialization.Serializable
-import mc.xalitoria.message.Pager
-import mc.xalitoria.placeholder.Placeholderable
+import mc.xalitoria.util.message.Pager
+import mc.xalitoria.util.placeholder.Placeholderable
 
 @Serializable
 data class StringList(

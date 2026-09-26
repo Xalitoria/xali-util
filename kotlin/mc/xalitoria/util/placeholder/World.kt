@@ -1,6 +1,6 @@
-package mc.xalitoria.placeholder
+package mc.xalitoria.util.placeholder
 
-import mc.xalitoria.serial.message.State
+import mc.xalitoria.util.serial.message.State
 import org.bukkit.World
 import kotlin.text.RegexOption.IGNORE_CASE
 import kotlin.uuid.toKotlinUuid

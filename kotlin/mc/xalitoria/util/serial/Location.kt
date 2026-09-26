@@ -1,4 +1,4 @@
-package mc.xalitoria.serial
+package mc.xalitoria.util.serial
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
@@ -13,10 +13,8 @@ import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import mc.xalitoria.math.VectorSerializer
-import mc.xalitoria.math.XVector
-import mc.xalitoria.placeholder.Placeholderable
-import mc.xalitoria.placeholder.placeholderable
+import mc.xalitoria.util.placeholder.Placeholderable
+import mc.xalitoria.util.placeholder.placeholderable
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.World
@@ -80,7 +78,7 @@ typealias XLocation = @Serializable(with = LocationSerializer::class) Location
 data class LocationData(
     val coordinates: DoubleArray = DoubleArray(6),
     @SerialName("world-id")
-    var worldId: XUuid? = null,
+    var worldId: UniqueId? = null,
 ): Placeholderable {
     var posX: Double
         get() = coordinates[0]
@@ -141,10 +139,6 @@ data class LocationData(
             .replace("\\{${prefix}rot(?:ation)?_x\\}".toRegex(), rotX.formatCoord())
             .replace("\\{${prefix}rot(?:ation)?_y\\}".toRegex(), rotY.formatCoord())
             .replace("\\{${prefix}rot(?:ation)?_z\\}".toRegex(), rotZ.formatCoord())
-            //.replace("{${prefix}axis}",   transform.axis.name)
-            //.replace("{${prefix}axis_x}", transform.axisDirection.x.toString())
-            //.replace("{${prefix}axis_y}", transform.axisDirection.y.toString())
-            //.replace("{${prefix}axis_z}", transform.axisDirection.z.toString())
             .let { world?.placeholderable?.setPlaceholders(it, prefix) ?: it }
     }
 

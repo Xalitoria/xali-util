@@ -1,4 +1,4 @@
-package mc.xalitoria.util
+package mc.xalitoria.util.bukkit
 
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitTask

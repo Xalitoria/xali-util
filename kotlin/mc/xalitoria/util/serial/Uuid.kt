@@ -1,4 +1,4 @@
-package mc.xalitoria.serial
+package mc.xalitoria.util.serial
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -21,7 +21,7 @@ object UuidSerializer : KSerializer<UUID> {
         UUID.fromString(decoder.decodeString())
 }
 
-typealias XUuid = @Serializable(UuidSerializer::class) UUID
+typealias UniqueId = @Serializable(UuidSerializer::class) UUID
 
 fun String.toUuidOrNull(): UUID? = try {
     UUID.fromString(this)

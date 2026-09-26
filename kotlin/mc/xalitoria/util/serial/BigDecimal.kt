@@ -1,4 +1,4 @@
-package mc.xalitoria.serial
+package mc.xalitoria.util.serial
 
 import java.math.BigDecimal
 import kotlinx.serialization.KSerializer

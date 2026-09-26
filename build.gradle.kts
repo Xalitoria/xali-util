@@ -1,33 +1,52 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import xalitoria.repo.*
 
 plugins {
-    kotlin("jvm")
     kotlin("plugin.serialization")
-    alias(libs.plugins.shadow)
     `maven-publish`
 }
 
+group = "mc.xalitoria"
+version = "0.0.2"
+
 dependencies {
-    implementation(kotlinx("coroutines-core"))
-    implementation(kotlinx("datetime"))
-
-    implementation(project(":color"))
-
-    implementation(libs.kaml)
+    api(kotlinx("coroutines-core"))
+    api(kotlinx("serialization-core"))
+    api(kotlinx("serialization-json"))
+    api(kotlinx("datetime"))
+    api(libs.xalicraft.color)
+    api(libs.kaml)
+    api(libs.bundles.adventure)
 
     compileOnly(libs.paper.api)
-    compileOnly(libs.placeholderapi)
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+    disableAutoTargetJvm()
+}
+
+kotlin {
+    compilerOptions.jvmTarget.set(JvmTarget.JVM_11)
+    jvmToolchain(11)
 }
 
 publishing {
-    publications.create<MavenPublication>("plugin") {
-        tasks.register("mainJar", Jar::class) {
-            archiveClassifier.set("")
-            from(sourceSets["main"].output)
-        }.get().let(::artifact)
-        tasks.register("sourceJar", Jar::class) {
-            archiveClassifier.set("sources")
-            from(sourceSets["main"].allSource)
-        }.get().let(::artifact)
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+        }
+    }
+    repositories {
+        maven("https://maven.xali.host/releases") {
+            credentials {
+                username = System.getenv("MAVEN_USER") ?: project.findProperty("maven.user") as? String
+                password = System.getenv("MAVEN_TOKEN") ?: project.findProperty("maven.token") as? String
+            }
+        }
     }
 }

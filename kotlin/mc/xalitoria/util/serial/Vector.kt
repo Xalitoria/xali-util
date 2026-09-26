@@ -1,5 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
-package mc.xalitoria.math
+
+package mc.xalitoria.util.serial
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable

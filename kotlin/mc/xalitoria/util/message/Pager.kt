@@ -1,6 +1,6 @@
-package mc.xalitoria.message
+package mc.xalitoria.util.message
 
-import mc.xalitoria.placeholder.Placeholderable
+import mc.xalitoria.util.placeholder.Placeholderable
 import kotlin.math.ceil
 
 class Pager<T>(

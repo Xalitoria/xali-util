@@ -1,4 +1,4 @@
-package mc.xalitoria.placeholder
+package mc.xalitoria.util.placeholder
 
 import java.time.Instant
 import java.time.ZoneOffset

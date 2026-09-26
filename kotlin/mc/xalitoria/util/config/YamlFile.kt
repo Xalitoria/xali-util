@@ -1,4 +1,4 @@
-package mc.xalitoria.config
+package mc.xalitoria.util.config
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
@@ -13,11 +13,7 @@ class YamlFile<T>(
     private val serializer: KSerializer<T>,
     private val default: () -> T,
     private val yaml: Yaml = Yaml(
-        // encodeDefaults = false: fields left at their default (in particular the `null` defaults on
-        // per-command messages/errors) are never written out, so the generated file only grows when an
-        // admin actually adds a key. strictMode = false: keys admins add or leave behind that don't
-        // match the current schema are ignored rather than rejected.
-        configuration = YamlConfiguration(strictMode = false, encodeDefaults = false)
+        configuration = YamlConfiguration(strictMode = false, encodeDefaults = true)
     )
 ) {
     var data: T = default()

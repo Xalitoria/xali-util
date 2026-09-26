@@ -1,11 +1,11 @@
-package mc.xalitoria.serial.message
+package mc.xalitoria.util.serial.message
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import mc.xalitoria.message.send
-import mc.xalitoria.placeholder.PlayerPlaceholder
-import mc.xalitoria.util.SenderPlayer
-import mc.xalitoria.util.TargetPlayer
+import mc.xalitoria.util.bukkit.SenderPlayer
+import mc.xalitoria.util.bukkit.TargetPlayer
+import mc.xalitoria.util.message.send
+import mc.xalitoria.util.placeholder.PlayerPlaceholder
 
 @Serializable
 open class Recipient(
