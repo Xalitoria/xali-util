@@ -3,7 +3,7 @@ package mc.xalitoria.util.serial.message
 import kotlinx.serialization.Serializable
 import mc.xalitoria.util.message.FAIL_COLOR
 import mc.xalitoria.util.message.PASS_COLOR
-import mc.xalitoria.util.placeholder.Placeholderable
+import mc.xalitoria.util.message.Placeholderable
 
 @Serializable
 open class State(

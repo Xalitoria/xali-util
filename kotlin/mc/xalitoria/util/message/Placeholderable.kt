@@ -1,4 +1,4 @@
-package mc.xalitoria.util.placeholder
+package mc.xalitoria.util.message
 
 @Suppress("UNCHECKED_CAST")
 interface Placeholderable {

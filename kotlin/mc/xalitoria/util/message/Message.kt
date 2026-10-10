@@ -1,8 +1,10 @@
 package mc.xalitoria.util.message
 
 import mc.xalitoria.color.CodedColor
-import mc.xalitoria.color.applyCmiGradients
+import mc.xalitoria.color.applyColors
 import mc.xalitoria.color.componentColors
+import mc.xalitoria.color.unescapeGradients
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
@@ -26,10 +28,16 @@ fun String.formatArgs(vararg args: Any?): String {
     return result
 }
 
+fun String.toComponent(): Component =
+    unescapeGradients()
+    .applyColors()
+    .componentColors()
+    .let(MINI::deserialize)
+
 private fun CommandSender._send(message: String?, vararg replace: Any?) {
     message
         ?.formatArgs(*replace)
-        ?.applyCmiGradients() // takes advantage of mixbox gradients
+        ?.applyColors(true)
         ?.componentColors()
         ?.let(MINI::deserialize)
         ?.let(::sendMessage)
@@ -47,18 +55,14 @@ infix fun CommandSender.warn(message: String?) { message?.let(::warn) }
 infix fun CommandSender.fail(message: String?) { message?.let(::fail) }
 
 
-/** The console can't show `&` codes or tags, so [message] is parsed like a chat message and logged as plain text. */
-private fun String.toLogText(): String =
-    applyCmiGradients().componentColors().let(MINI::deserialize).let(PLAIN::serialize)
-
-fun Logger.send(message: String, vararg replace: Any?) { message.formatArgs(*replace).toLogText().let(::info) }
+fun Logger.send(message: String, vararg replace: Any?) { message.formatArgs(*replace).toComponent().let(PLAIN::serialize).let(::info) }
 fun Logger.pass(message: String, vararg replace: Any?) { send(PASS_COLOR + message, *replace) }
 fun Logger.info(message: String, vararg replace: Any?) { send(INFO_COLOR + message, *replace) }
 fun Logger.warn(message: String, vararg replace: Any?) { send(WARN_COLOR + message, *replace) }
 fun Logger.fail(message: String, vararg replace: Any?) { send(FAIL_COLOR + message, *replace) }
 fun Logger.fail(message: String, throwable: Throwable, vararg replace: Any?) {
     // The stack trace is appended after parsing: its `<init>` style names are not tags.
-    info((FAIL_COLOR + message).formatArgs(*replace).toLogText() + "\n" + throwable.stackTraceToString())
+    fail(message + "\n" + throwable.stackTraceToString(), *replace)
 }
 
 infix fun Logger.send(message: String?) { message?.let(::send) }

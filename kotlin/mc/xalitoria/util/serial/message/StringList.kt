@@ -2,7 +2,7 @@ package mc.xalitoria.util.serial.message
 
 import kotlinx.serialization.Serializable
 import mc.xalitoria.util.message.Pager
-import mc.xalitoria.util.placeholder.Placeholderable
+import mc.xalitoria.util.message.Placeholderable
 
 @Serializable
 data class StringList(

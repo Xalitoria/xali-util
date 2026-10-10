@@ -1,5 +1,7 @@
-package mc.xalitoria.util.placeholder
+package mc.xalitoria.util.bukkit.placeholder
 
+import mc.xalitoria.util.message.Placeholderable
+import org.bukkit.entity.Player
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -10,11 +12,13 @@ import kotlin.time.Duration.Companion.milliseconds
 val Long.placeholderable get() = object : Placeholderable {
     @Suppress("NOTHING_TO_INLINE")
     override val placeholderPrefix: String get() = "time_"
-    override fun setPlaceholders(message: String, prefix: String): String {
+    override fun setPlaceholders(message: String, prefix: String): String =
+        setPlaceholders(message, prefix, null)
+    fun setPlaceholders(message: String, prefix: String = placeholderPrefix, player: Player?): String {
         val duration = this@placeholderable.milliseconds
-        val prefix = Regex.escape(prefix)
+        val escaped = Regex.escape(prefix)
         return message
-            .replace(Regex("\\{${prefix}duration_(.+?)\\}", IGNORE_CASE)) { match ->
+            .replace(Regex("\\{${escaped}duration_(.+?)\\}", IGNORE_CASE)) { match ->
                 when (match.groupValues[1].lowercase()) {
                     "years"     -> duration.inWholeDays.div(365)
                     "months"    -> duration.inWholeDays.mod(365).div(30)
@@ -26,8 +30,8 @@ val Long.placeholderable get() = object : Placeholderable {
                     "ticks"     -> duration.inWholeMilliseconds.div(50).mod(20)
                     "milliseconds" ->   duration.inWholeMilliseconds
                     else -> runCatching {
-                        DateTimeFormatter.ofPattern(match.groupValues[1], Locale.US)
-                            .withZone(ZoneOffset.UTC)
+                        DateTimeFormatter.ofPattern(match.groupValues[1], US)
+                            .withZone(/* player.zoneId ?: */ ZoneOffset.systemDefault())
                             .format(Instant.ofEpochMilli(this@placeholderable))
                     }.getOrDefault(match.value)
                 }.toString()

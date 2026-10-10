@@ -30,6 +30,13 @@ inline fun Plugin.runTaskLater(delay: Long, crossinline block: TaskContext.() ->
     return task
 }
 
+inline fun Plugin.runTaskAsynchronously(crossinline block: TaskContext.() -> Unit): BukkitTask {
+    lateinit var task: BukkitTask
+    val context by lazy { TaskContext(task) }
+    task = server.scheduler.runTaskAsynchronously(this, Runnable { context.block() })
+    return task
+}
+
 inline fun Plugin.runTaskTimerAsynchronously(delay: Long, period: Long, crossinline block: TaskContext.() -> Unit): BukkitTask {
     lateinit var task: BukkitTask
     val context by lazy { TaskContext(task) }

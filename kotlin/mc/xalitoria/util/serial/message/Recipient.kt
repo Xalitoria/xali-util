@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 import mc.xalitoria.util.bukkit.SenderPlayer
 import mc.xalitoria.util.bukkit.TargetPlayer
 import mc.xalitoria.util.message.send
-import mc.xalitoria.util.placeholder.PlayerPlaceholder
+import mc.xalitoria.util.bukkit.placeholder.PlayerPlaceholder
 
 @Serializable
 open class Recipient(

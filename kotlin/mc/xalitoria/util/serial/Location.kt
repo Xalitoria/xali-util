@@ -1,10 +1,6 @@
 package mc.xalitoria.util.serial
 
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.Transient
+import kotlinx.serialization.*
 import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -13,22 +9,22 @@ import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import mc.xalitoria.util.placeholder.Placeholderable
-import mc.xalitoria.util.placeholder.placeholderable
+import mc.xalitoria.util.message.Placeholderable
+import mc.xalitoria.util.bukkit.placeholder.placeholderable
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.World
-import org.bukkit.util.Vector
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import kotlin.math.*
 
 val Location.xData: LocationData get() = LocationData(
     [x, y, z, direction.x, direction.y, direction.z],
-    world?.uid
-)
+).apply { world = this@xData.world }
 
 val Location.position: XVector get() = XVector(x, y, z)
 
+@OptIn(ExperimentalSerializationApi::class)
 object LocationSerializer : KSerializer<Location> {
     override val descriptor: SerialDescriptor =
         buildClassSerialDescriptor("Location") {
@@ -80,6 +76,11 @@ data class LocationData(
     @SerialName("world-id")
     var worldId: UniqueId? = null,
 ): Placeholderable {
+
+    @SerialName("world-name")
+    var worldName: String? = null
+        private set
+
     var posX: Double
         get() = coordinates[0]
         set(v) { coordinates[0] = v }
@@ -113,32 +114,54 @@ data class LocationData(
         set(v) { rotX = v.x.toFloat(); rotY = v.y.toFloat(); rotZ = v.z.toFloat() }
 
     var world: World?
-        get() = worldId?.let { Bukkit.getWorld(it) }
-        set(v) { worldId = v?.uid }
+        get() {
+            val result = worldId?.let { Bukkit.getWorld(it) } ?: worldName?.let { Bukkit.getWorld(it) }
+            worldId = result?.uid
+            worldName = result?.name ?: worldName
+            return result
+        }
+        set(v) {
+            worldId = v?.uid
+            worldName = v?.name ?: worldName
+        }
 
-    /**
-     * Sets the world by name.
-     * @return true if the world was found, false otherwise.
-     */
-    fun setWorld(name: String?): Boolean {
-        val world = name?.let { Bukkit.getWorld(it) }
-        worldId = world?.uid
-        return worldId != null
+    var pitch: Float
+        get() {
+            return if (rotX == 0.0F && rotZ == 0.0F) { if (rotY > 0) -90 else 90 }
+            else { atan(-rotY.div(sqrt(rotX*rotX + rotZ*rotZ))).times(RADIANS_TO_DEGREES) }.toFloat()
+        }
+        set(v) = setDirection(pitchDeg = v)
+
+    var yaw: Float
+        get() {
+            val twoPI = 2 * Math.PI
+            return atan2(-rotX, rotZ).plus(twoPI).mod(twoPI).times(RADIANS_TO_DEGREES).toFloat()
+        }
+        set(v) = setDirection(yawDeg = v)
+
+    /** Rebuilds the direction vector from [yawDeg]/[pitchDeg] together, since neither angle alone determines it. */
+    private fun setDirection(yawDeg: Float = yaw, pitchDeg: Float = pitch) {
+        val yawRad = yawDeg.div(RADIANS_TO_DEGREES)
+        val pitchRad = pitchDeg.div(RADIANS_TO_DEGREES)
+        val xz = cos(pitchRad)
+        rotX = -sin(yawRad).times(xz).toFloat()
+        rotY = -sin(pitchRad).toFloat()
+        rotZ = cos(yawRad).times(xz).toFloat()
     }
 
     var location: XLocation
-        get() = XLocation(world, posX, posY, posZ).setDirection(Vector(rotX, rotY, rotZ))
+        get() = XLocation(world, posX, posY, posZ).setDirection(XVector(rotX, rotY, rotZ))
         set(v) { position = v.position; rotation = v.direction }
 
     override fun setPlaceholders(message: String, prefix: String): String {
-        val prefix = Regex.escape(prefix)
+        val escaped = Regex.escape(prefix)
         return message
-            .replace("\\{${prefix}pos(?:ition)?_x\\}".toRegex(), posX.formatCoord())
-            .replace("\\{${prefix}pos(?:ition)?_y\\}".toRegex(), posY.formatCoord())
-            .replace("\\{${prefix}pos(?:ition)?_z\\}".toRegex(), posZ.formatCoord())
-            .replace("\\{${prefix}rot(?:ation)?_x\\}".toRegex(), rotX.formatCoord())
-            .replace("\\{${prefix}rot(?:ation)?_y\\}".toRegex(), rotY.formatCoord())
-            .replace("\\{${prefix}rot(?:ation)?_z\\}".toRegex(), rotZ.formatCoord())
+            .replace("\\{${escaped}pos(?:ition)?_x\\}".toRegex(), posX.formatCoord())
+            .replace("\\{${escaped}pos(?:ition)?_y\\}".toRegex(), posY.formatCoord())
+            .replace("\\{${escaped}pos(?:ition)?_z\\}".toRegex(), posZ.formatCoord())
+            .replace("\\{${escaped}rot(?:ation)?_x\\}".toRegex(), rotX.formatCoord())
+            .replace("\\{${escaped}rot(?:ation)?_y\\}".toRegex(), rotY.formatCoord())
+            .replace("\\{${escaped}rot(?:ation)?_z\\}".toRegex(), rotZ.formatCoord())
             .let { world?.placeholderable?.setPlaceholders(it, prefix) ?: it }
     }
 
@@ -168,6 +191,7 @@ data class LocationData(
         ")"
 
     companion object {
+        private const val RADIANS_TO_DEGREES = 57.29577951308232
         @Transient
         var df3 = DecimalFormat("#.###").apply { roundingMode = RoundingMode.HALF_UP }
         fun Double.formatCoord(): String = df3.format(this)
