@@ -4,18 +4,11 @@ import mc.xalitoria.util.serial.UniqueId
 import org.bukkit.entity.Player
 import org.bukkit.permissions.Permissible
 import java.time.ZoneId
-import java.time.ZoneOffset
 
 typealias SenderPlayer = Player
 typealias TargetPlayer = Player
 typealias SenderId = UniqueId
 typealias TargetId = UniqueId
-
-//val Player.zoneId: ZoneId get() = try {
-//    ZoneId.of("America/New_York")
-//} catch (e: Exception) {
-//    ZoneId.of("UTC")
-//}
 
 /**
  * @return `true` if the [Permissible] has the permission or [permission] is `null` or empty

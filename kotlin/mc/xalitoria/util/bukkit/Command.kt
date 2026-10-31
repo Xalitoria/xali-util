@@ -18,6 +18,6 @@ public inline fun <S, T : ArgumentBuilder<S, T>> ArgumentBuilder<S, T>.nextArg(c
 public inline fun <S, T : ArgumentBuilder<S, T>> ArgumentBuilder<S, T>.orElse(crossinline block: (CommandContext<S>) -> Int): T =
     executes { block(it) }
 
-public inline fun CommandContext<CommandSourceStack>.getPlayer(arg: String) =
+public fun CommandContext<CommandSourceStack>.getPlayer(arg: String) =
     getArgument(arg, PlayerSelectorArgumentResolver::class.java)
         .resolve(source).firstOrNull()
