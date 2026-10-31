@@ -51,6 +51,7 @@ All packages are under `mc.xalitoria.util`.
 | `bukkit.placeholder` | `PlayerPlaceholder` and the time and world placeholders. |
 | `message` | `send`, `pass`, `info`, `warn` and `fail` for `CommandSender` and `Logger` (colored with `PASS_COLOR` and the others), `formatArgs` (`{0}`, `{1}`), `String.toComponent()`, `Pager` and `Placeholderable`. |
 | `config` | `YamlFile<T>`: a YAML file read and written through kaml. Missing files are created from the defaults, unknown keys are ignored, and defaults are written out. |
+| `config` (database) | `DatabaseConfig`: the `database` section of a plugin's configuration (type, table prefix, SQLite file, MariaDB/MySQL login), with `DatabaseType`, the `DatabaseSettings` interface for plugins that add settings of their own, and the JDBC URL and driver class of a server. It only holds settings; connecting is up to the plugin. |
 | `serial` | Serializers for `BigDecimal`, `Location`, `Vector` and `UUID`, and `message` (`State`, `Recipient`, `StringList`) for configurable messages. |
 | `kotlin` | Collection helpers such as `toggle` and `stringFilter`. |
 
