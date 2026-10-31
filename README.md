@@ -9,7 +9,7 @@ files, kotlinx.serialization serializers for Bukkit and JDK types, and Brigadier
 ### Using the library
 
 The plugins use `util` as a published artifact, declared in the version catalog (`libs.xalicraft.util` in
-`libs.versions.toml`). A plugin lists it with `api(...)`, so the server downloads it when the plugin loads (see the
+`xali-gradle/libs.versions.toml`). A plugin lists it with `api(...)`, so the server downloads it when the plugin loads (see the
 [Gradle plugin](../xali-gradle/README.md#loading-libraries)):
 
 **File** `chat/paper/build.gradle.kts`
@@ -20,18 +20,17 @@ dependencies {
 }
 ```
 
-`util` itself uses [`color`](../color/README.md) as a published artifact (`libs.xalicraft.color`).
+`util` itself uses [`color`](../color/README.md) by coordinates (`libs.xalicraft.color`).
 
-> [!IMPORTANT]
-> A change to `util` reaches the plugins only after it is published, because they depend on the coordinates and not on
-> the project. To try a change locally, publish it to the local Maven repository (the first repository every module
-> reads) and build the plugin again:
->
-> ```console
-> user $ ./gradlew :util:publishToMavenLocal
-> ```
->
-> After a release, raise the version in `libs.versions.toml`.
+In the workspace the plugins compile and test against the checked-out `util`, so a change to it is seen at once (see
+[Live libraries](../README.md#live-libraries)). Outside the workspace they depend on the coordinates, so a change reaches
+them only after it is published. To try one, publish it to the local Maven repository and build the plugin again:
+
+```console
+user $ ./gradlew publishToMavenLocal
+```
+
+After a release, raise the version in `xali-gradle/libs.versions.toml`.
 
 ### Publishing
 
