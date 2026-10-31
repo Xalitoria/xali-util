@@ -1,7 +1,9 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import xalitoria.repo.*
+import mc.xalitoria.gradle.repo.*
 
 plugins {
+    kotlin("jvm")
+    id("mc.xalitoria.conventions")
     kotlin("plugin.serialization")
     `maven-publish`
 }
