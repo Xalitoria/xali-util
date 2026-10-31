@@ -10,7 +10,7 @@ files, kotlinx.serialization serializers for Bukkit and JDK types, and Brigadier
 
 The plugins use `util` as a published artifact, declared in the version catalog (`libs.xalicraft.util` in
 `libs.versions.toml`). A plugin lists it with `api(...)`, so the server downloads it when the plugin loads (see the
-[Gradle plugin](../plugin/README.md#loading-libraries)):
+[Gradle plugin](../xali-gradle/README.md#loading-libraries)):
 
 **File** `chat/paper/build.gradle.kts`
 
@@ -72,4 +72,4 @@ release and a version bump.
 ## See also
 
 - [color](../color/README.md) — the color library `util` builds on
-- [Gradle plugin](../plugin/README.md) — how `api(...)` libraries are loaded
+- [Gradle plugin](../xali-gradle/README.md) — how `api(...)` libraries are loaded
